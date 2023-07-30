@@ -1,0 +1,25 @@
+name: "Example Component"
+description: "an example Kubeflow Pipelines V1 component"
+inputs:
+  - name: message
+    description: "a message to print to the console"
+    type: String
+implementation:
+  container:
+    image: "python:3.10"
+    command:
+      - "python"
+      - "-c"
+      - |
+        import argparse
+        
+        # Parse the arguments
+        _parser = argparse.ArgumentParser(prog="Example Component", description="")
+        _parser.add_argument("--message", dest="message", type=str, required=True)
+        _parsed_args = vars(_parser.parse_args())
+        
+        # Print the message
+        print(_parsed_args["message"])
+    args:
+      - "--message"
+      - { inputValue: message }

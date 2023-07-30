@@ -1,0 +1,4 @@
+kfp==1.8.22
+jsonschema==4.17.3
+rfc3339_validator==0.1.4
+ruamel.yaml==0.17.31
