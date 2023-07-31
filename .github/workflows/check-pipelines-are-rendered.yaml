@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   call_workflow:
-    uses: ./_check-pipelines-are-rendered.yaml
+    uses: ./.github/workflows/_check-pipelines-are-rendered.yaml
     with:
       # a newline-separated list of scripts to run and verify they do not change the repo
       pipeline_render_scripts: |

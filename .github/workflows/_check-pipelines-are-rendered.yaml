@@ -32,7 +32,7 @@ jobs:
           PIPELINE_RENDER_SCRIPTS: "${{ inputs.pipeline_render_scripts }}"
         run: |
           IFS=$'\n'
-          for _script in "${PIPELINE_RENDER_SCRIPTS}"; do
+          for _script in ${PIPELINE_RENDER_SCRIPTS}; do
               echo "::notice::Running script '${_script}'"
           
               # ensure the script exists
