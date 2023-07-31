@@ -12,14 +12,16 @@ REPOSITORY_ROOT_PATH=$(git rev-parse --show-toplevel)
 # source common scripts
 source "${REPOSITORY_ROOT_PATH}/common_scripts/kfp.sh"
 
-# define any custom render script arguments
+# define custom render script arguments
+#  - TIP: more arguments can be added to allow the same pipeline definition
+#         to render multiple variants (e.g. "dev", "test", "prod")
 RENDER_SCRIPT_ARGS=(
   #"--my-arg" "my-value"
 )
 
 # render the pipeline
 render_pipeline \
-  "./render_pipeline.py" \
-  "./RENDERED/" \
+  "./pipeline.py" \
+  "./RENDERED_PIPELINE/" \
   "./.temp/" \
   "${RENDER_SCRIPT_ARGS[@]}"

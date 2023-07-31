@@ -1,0 +1,18 @@
+name: check pipelines are rendered
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  call_workflow:
+    uses: ./_check-pipelines-are-rendered.yaml
+    with:
+      # a newline-separated list of scripts to run and verify they do not change the repo
+      pipeline_render_scripts: |
+        ./step-1--render-pipelines/example_pipeline_1/render_pipeline.sh

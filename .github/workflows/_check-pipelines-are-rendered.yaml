@@ -1,0 +1,64 @@
+name: check pipelines are rendered (TEMPLATE)
+
+on:
+  workflow_call:
+    inputs:
+      pipeline_render_scripts:
+        required: true
+        description: "a newline-separated list of scripts to run and verify they do not change the repo"
+        type: string
+
+jobs:
+  run_pipeline_render_scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Install Python Requirements
+        run: |
+          pip install -r ./requirements.txt
+
+      - name: Run Pipeline Render Scripts
+        env:
+          PIPELINE_RENDER_SCRIPTS: "${{ inputs.pipeline_render_scripts }}"
+        run: |
+          IFS=$'\n'
+          for _script in "${PIPELINE_RENDER_SCRIPTS}"; do
+              echo "::notice::Running script '${_script}'"
+          
+              # ensure the script exists
+              if [[ ! -f "${_script}" ]]; then
+                  echo "::error::Script '${_script}' does not exist"
+                  exit 1
+              fi
+          
+              # run the script
+              set +e
+              _cmd_output=$(bash "${_script}" 2>&1)
+              _cmd_exit_code=$?
+              set -e
+              if [[ ${_cmd_exit_code} -ne 0 ]]; then
+                  echo "::error::Script '${_script}' failed with exit code '${_cmd_exit_code}'"
+                  echo "::error::Script ------------------------- SCRIPT OUTPUT -------------------------"
+                  echo "::error::${_cmd_output}"
+                  echo "::error::Script -----------------------------------------------------------------"
+                  exit ${_cmd_exit_code}
+              fi
+          
+              # ensure running the script did not change the contents of the repo
+              if [[ -n $(git status --porcelain .) ]]; then
+                  echo "::error::Changes detected, ensure '${_script}' was run before committing"
+                  exit 1
+              else
+                  echo "::notice::No changes detected, continuing..."
+              fi
+          done
