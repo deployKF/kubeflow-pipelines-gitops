@@ -4,7 +4,7 @@ This repo demonstrates how GitOps can be used with [Kubeflow Pipelines](https://
 
 > __NOTE:__ 
 > 
-> - This repo is about using GitOps to manage __pipelines definitions__ and __pipeline schedules__ NOT the Kubeflow platform itself.
+> - This repo is about using GitOps to manage __pipelines definitions__ and __pipeline schedules__ NOT the platform itself.
 > - This repo only supports Kubeflow Pipelines compiled in V1 mode.
 
 ## Repository Contents
@@ -120,7 +120,7 @@ For example, you may have the following repositories:
 The main reasons to use a structure like this are:
 
 - At a fundamental level, pipeline definitions and schedules are different things (with different lifecycles).
-- Pipeline schedules are typically owned by "operations" teams, while the definitions are typically owned by "data science" teams.
+- Schedules are typically owned by "operations" teams, while the definitions are typically owned by "data science" teams.
 - Machine learning projects often have many pipelines, so logically grouping them makes it easier to manage them.
 
 ## Step 1: Render Pipelines
