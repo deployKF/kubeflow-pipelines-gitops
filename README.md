@@ -208,20 +208,30 @@ You will find the following items under [`/step-1--render-pipelines/example_pipe
 
 > __WARNING:__
 > 
-> - it is NOT recommended to run `pipeline.py` directly, but rather to use the `render_pipeline.sh` script
-> - if each run of `render_pipeline.sh` results in a different rendered pipeline, your pipeline definition is not deterministic (for example, it might use `datetime.now()` in the definition itself)
->    - if a step in your pipeline requires the current date/time, you may use the Argo Workflows [variables feature](https://argoproj.github.io/argo-workflows/variables/#global) to set a step's inputs, for example:
->       - `{{ workflow.creationTimestamp.RFC3339 }}` becomes the run-time of the workflow ("2030-01-01T00:00:00Z")
->       - `{{ workflow.creationTimestamp.<STRFTIME_CHARACTER> }}` becomes a specific part of the run-time (if [`<STRFTIME_CHARACTER>`](https://strftime.org/) is `Y` then the output would be the year)
->       - custom time formats can be created using multiple variables (`{{ workflow.creationTimestamp.Y }}-{{ workflow.creationTimestamp.m }}-{{ workflow.creationTimestamp.d }}` becomes "2030-01-01")
+> It is NOT recommended to run `pipeline.py` directly, but rather to use the `render_pipeline.sh` script.
+
+> __WARNING:__
+> 
+> If each run of `render_pipeline.sh` results in a different rendered pipeline, your pipeline definition is not deterministic, 
+> for example, it might be using `datetime.now()` in the definition itself, rather than within a step.
+>
+> If a step in your pipeline requires the current date/time, you may use the Argo Workflows [variables feature](https://argoproj.github.io/argo-workflows/variables/#global) to set a step's inputs:
+> 
+> - `{{workflow.creationTimestamp.RFC3339}}` becomes the run-time of the workflow ("2030-01-01T00:00:00Z")
+> - `{{workflow.creationTimestamp.<STRFTIME_CHAR>}}` becomes the run-time formatted by a single [strftime](https://strftime.org/) character
+>     - _TIP: custom time formats can be created using multiple variables, `{{workflow.creationTimestamp.Y}}-{{workflow.creationTimestamp.m}}-{{workflow.creationTimestamp.d}}` becomes "2030-01-01"_
 
 > __TIP:__
 > 
-> - additional arguments may be added to `pipeline.py` so that the same pipeline definition can render multiple variants:
->    - if you do this, you will need to create a separate `render_pipeline.sh` script for each variant (for example, `render_pipeline_dev.sh`, `render_pipeline_test.sh`, `render_pipeline_prod.sh`)
->    - these scripts should be configured to render the pipeline into a separate directory (for example, `RENDERED_PIPELINE_dev/`, `RENDERED_PIPELINE_test/`, `RENDERED_PIPELINE_prod/`)
-> - the `render_pipeline.sh` script may be used in PR-checks to ensure the render pipeline script was run:
->    - an example GitHub action which does this can be found under [`/.github/workflows/`](./.github/workflows/) named `_check-pipelines-are-rendered.yaml`
+> The `render_pipeline.sh` script may be used in PR-checks to ensure the render pipeline script was run.
+> An example GitHub action which does this can be found under [`/.github/workflows/`](./.github/workflows/) named `_check-pipelines-are-rendered.yaml`.
+
+> __TIP:__
+> 
+> Additional arguments may be added to `pipeline.py` so that the same pipeline definition can render multiple variants.
+> 
+> - If you do this, you will need to create a separate `render_pipeline.sh` script for each variant, for example, `render_pipeline_dev.sh`, `render_pipeline_test.sh`, `render_pipeline_prod.sh`.
+> - These scripts should be configured to render the pipeline into a separate directory, for example, `RENDERED_PIPELINE_dev/`, `RENDERED_PIPELINE_test/`, `RENDERED_PIPELINE_prod/`.
 
 # Step 2: Run Pipelines
 
