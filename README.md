@@ -206,11 +206,33 @@ For this purpose, you will find the following items under [`/step-1--render-pipe
   </tr>
 </table>
 
+Additionally, we provide the following GitHub Actions [reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow) templates under [`/.github/workflows/`](./.github/workflows):
+
+<table>
+  <tr>
+    <th>Workflow Template</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="./.github/workflows/_check-pipelines-are-rendered.yaml">
+        <code>./_check-pipelines-are-rendered.yaml</code>
+      </a>
+    </td>
+    <td>
+      <ul>
+        <li>Takes a list named <code>pipeline_render_scripts</code> with paths to scripts like <code>render_pipeline.sh</code> and runs them to ensure PRs have not forgotten to update the rendered pipelines after making changes</li>
+        <li>Example of calling workflow: <a href="./.github/workflows/check-pipelines-are-rendered.yaml"><code>./check-pipelines-are-rendered.yaml</code></a></li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
 > __WARNING:__
 > 
 > It is NOT recommended to run `pipeline.py` directly, but rather to use the `render_pipeline.sh` script.
 
-> __WARNING:__
+> __TIP:__
 > 
 > If each run of `render_pipeline.sh` results in a different rendered pipeline, your pipeline definition is not deterministic, 
 > for example, it might be using `datetime.now()` in the definition itself, rather than within a step.
@@ -220,11 +242,6 @@ For this purpose, you will find the following items under [`/step-1--render-pipe
 > - `{{workflow.creationTimestamp.RFC3339}}` becomes the run-time of the workflow ("2030-01-01T00:00:00Z")
 > - `{{workflow.creationTimestamp.<STRFTIME_CHAR>}}` becomes the run-time formatted by a single [strftime](https://strftime.org/) character
 >     - _TIP: custom time formats can be created using multiple variables, `{{workflow.creationTimestamp.Y}}-{{workflow.creationTimestamp.m}}-{{workflow.creationTimestamp.d}}` becomes "2030-01-01"_
-
-> __TIP:__
-> 
-> The `render_pipeline.sh` script may be used in PR-checks to ensure the render pipeline script was run.
-> An example GitHub action which does this can be found under [`/.github/workflows/`](./.github/workflows/) named `_check-pipelines-are-rendered.yaml`.
 
 > __TIP:__
 > 
