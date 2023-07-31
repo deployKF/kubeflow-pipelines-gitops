@@ -64,6 +64,8 @@ def main(args: List[str]):
     # parse CLI arguments
     args = _parse_args(args)
 
+    # nothing change
+
     # ensure the output folder does not already exist, or is empty
     if os.path.exists(args.output_folder):
         if os.listdir(args.output_folder):
