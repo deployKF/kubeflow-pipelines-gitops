@@ -10,11 +10,11 @@ cd "$THIS_SCRIPT_FOLDER"
 REPOSITORY_ROOT_PATH=$(git rev-parse --show-toplevel)
 
 # source common scripts
-source "${REPOSITORY_ROOT_PATH}/common_scripts/kfp.sh"
+source "${REPOSITORY_ROOT_PATH}/common_scripts/step_1.sh"
 
 # define custom render script arguments
-#  - TIP: more arguments can be added to allow the same pipeline definition
-#         to render multiple variants (e.g. "dev", "test", "prod")
+# TIP: add new arguments to allow the same pipeline definition to render multiple variants
+#      (e.g. create an '--environment' argument which allows values like: "dev", "test", "prod")
 RENDER_SCRIPT_ARGS=(
   #"--my-arg" "my-value"
 )

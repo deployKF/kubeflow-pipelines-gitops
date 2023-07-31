@@ -10,7 +10,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
 #######################################
 
 # builds a PYTHONPATH that includes the repository root
-function _get_pythonpath() {
+function get_pythonpath() {
   local _repository_root_path
   _repository_root_path=$(git rev-parse --show-toplevel)
 
@@ -35,7 +35,7 @@ function run_python_script() {
   script_exit_code=0
 
   local _pythonpath
-  _pythonpath=$(_get_pythonpath)
+  _pythonpath=$(get_pythonpath)
 
   log_info "running python script '$(basename "$_script_path")'"
   set +e

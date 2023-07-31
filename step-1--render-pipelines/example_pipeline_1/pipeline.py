@@ -89,7 +89,7 @@ def main(args: List[str]):
     # pipeline definition
     ################################
     @dsl.pipeline(name="pipeline_1", description="pipeline_1 description")
-    def pipeline(input_text: str):
+    def pipeline(custom_message: str):
         ################################
         # pipeline step 0
         ################################
@@ -109,7 +109,7 @@ def main(args: List[str]):
             [
                 f"current_utc_epoch: {current_utc_epoch__ref}",
                 f"day_of_week: {day_of_week__ref}",
-                f"custom_message: {input_text}",
+                f"custom_message: {custom_message}",
             ]
         )
 

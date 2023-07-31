@@ -262,7 +262,9 @@ def main(args: List[str]):
 
     # if only one folder contains a "params/" folder, the folders are not equal
     elif pipeline_1_has_params or pipeline_2_has_params:
-        logger.info("(EXIT CODE: 200) Pipeline folders contain different 'params/' files")
+        logger.info(
+            "(EXIT CODE: 200) Pipeline folders contain different 'params/' files"
+        )
         sys.exit(200)
 
     # compare workflow YAML files

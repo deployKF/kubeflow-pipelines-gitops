@@ -2,9 +2,9 @@ apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
   generateName: pipeline-1-
-  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.22, pipelines.kubeflow.org/pipeline_compilation_time: '2023-07-26T18:25:32.786979',
+  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.22, pipelines.kubeflow.org/pipeline_compilation_time: '2023-07-30T19:31:36.462884',
     pipelines.kubeflow.org/pipeline_spec: '{"description": "pipeline_1 description",
-      "inputs": [{"name": "input_text", "type": "String"}], "name": "pipeline_1"}'}
+      "inputs": [{"name": "custom_message", "type": "String"}], "name": "pipeline_1"}'}
   labels: {pipelines.kubeflow.org/kfp_sdk_version: 1.8.22}
 spec:
   entrypoint: pipeline-1
@@ -16,7 +16,7 @@ spec:
       - |-
         current_utc_epoch: {{inputs.parameters.step-0-func-utc_epoch}}
         day_of_week: {{inputs.parameters.step-0-func-day_of_week}}
-        custom_message: {{inputs.parameters.input_text}}
+        custom_message: {{inputs.parameters.custom_message}}
       command:
       - python
       - -c
@@ -33,7 +33,7 @@ spec:
       image: python:3.10
     inputs:
       parameters:
-      - {name: input_text}
+      - {name: custom_message}
       - {name: step-0-func-day_of_week}
       - {name: step-0-func-utc_epoch}
     metadata:
@@ -50,7 +50,7 @@ spec:
           "c0ef046e1f6c7a9cbcd80254797e1ef68d0f019f3aa13fc5978eb599d2a41372", "url":
           "example_component.yaml"}', pipelines.kubeflow.org/arguments.parameters: '{"message":
           "current_utc_epoch: {{inputs.parameters.step-0-func-utc_epoch}}\nday_of_week:
-          {{inputs.parameters.step-0-func-day_of_week}}\ncustom_message: {{inputs.parameters.input_text}}"}'}
+          {{inputs.parameters.step-0-func-day_of_week}}\ncustom_message: {{inputs.parameters.custom_message}}"}'}
       labels:
         pipelines.kubeflow.org/kfp_sdk_version: 1.8.22
         pipelines.kubeflow.org/pipeline-sdk-type: kfp
@@ -58,7 +58,7 @@ spec:
   - name: pipeline-1
     inputs:
       parameters:
-      - {name: input_text}
+      - {name: custom_message}
     dag:
       tasks:
       - name: example-component
@@ -66,7 +66,7 @@ spec:
         dependencies: [step-0-func]
         arguments:
           parameters:
-          - {name: input_text, value: '{{inputs.parameters.input_text}}'}
+          - {name: custom_message, value: '{{inputs.parameters.custom_message}}'}
           - {name: step-0-func-day_of_week, value: '{{tasks.step-0-func.outputs.parameters.step-0-func-day_of_week}}'}
           - {name: step-0-func-utc_epoch, value: '{{tasks.step-0-func.outputs.parameters.step-0-func-utc_epoch}}'}
       - {name: step-0-func, template: step-0-func}
@@ -75,7 +75,7 @@ spec:
         dependencies: [step-0-func]
         arguments:
           parameters:
-          - {name: input_text, value: '{{inputs.parameters.input_text}}'}
+          - {name: custom_message, value: '{{inputs.parameters.custom_message}}'}
           - {name: step-0-func-day_of_week, value: '{{tasks.step-0-func.outputs.parameters.step-0-func-day_of_week}}'}
           - {name: step-0-func-utc_epoch, value: '{{tasks.step-0-func.outputs.parameters.step-0-func-utc_epoch}}'}
   - name: step-0-func
@@ -204,7 +204,7 @@ spec:
       image: python:3.10
     inputs:
       parameters:
-      - {name: input_text}
+      - {name: custom_message}
       - {name: step-0-func-day_of_week}
       - {name: step-0-func-utc_epoch}
       artifacts:
@@ -214,7 +214,7 @@ spec:
           data: |-
             current_utc_epoch: {{inputs.parameters.step-0-func-utc_epoch}}
             day_of_week: {{inputs.parameters.step-0-func-day_of_week}}
-            custom_message: {{inputs.parameters.input_text}}
+            custom_message: {{inputs.parameters.custom_message}}
     metadata:
       annotations: {pipelines.kubeflow.org/task_display_name: 'STEP 1: Print Message
           (Python Function Component)', pipelines.kubeflow.org/component_spec: '{"implementation":
@@ -232,5 +232,5 @@ spec:
         pipelines.kubeflow.org/enable_caching: "true"
   arguments:
     parameters:
-    - {name: input_text}
+    - {name: custom_message}
   serviceAccountName: pipeline-runner

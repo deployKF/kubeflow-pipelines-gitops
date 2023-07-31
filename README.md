@@ -125,12 +125,12 @@ The main reasons to use a structure like this are:
 
 ## Step 1: Render Pipelines
 
-The [Kubeflow Pipelines SDK](https://kubeflow-pipelines.readthedocs.io/en/stable/index.html) is a Python [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) which compiles down to [Argo `Workflow`](https://argoproj.github.io/argo-workflows/workflow-concepts/#the-workflow) resources.
-The Kubeflow Pipelines backend is able to execute the compiled pipelines on a Kubernetes cluster, either one-off or on a schedule.
+The [Kubeflow Pipelines SDK](https://kubeflow-pipelines.readthedocs.io/en/stable/index.html) is a Python [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) which compiles down to [Argo `Workflow`](https://argoproj.github.io/argo-workflows/workflow-concepts/#the-workflow) resources,
+the Kubeflow Pipelines backend is able to execute compiled pipelines on a Kubernetes cluster on a schedule.
 
 To manage pipeline definitions/schedules with GitOps, we need a reliable way to render the pipelines from their "dynamic Python representation" into their "static YAML representation".
 
-You will find the following items under [`/step-1--render-pipelines/example_pipeline_1/`](./step-1--render-pipelines/example_pipeline_1):
+For this purpose, you will find the following items under [`/step-1--render-pipelines/example_pipeline_1/`](./step-1--render-pipelines/example_pipeline_1):
 
 <table>
   <tr>
@@ -235,7 +235,31 @@ You will find the following items under [`/step-1--render-pipelines/example_pipe
 
 # Step 2: Run Pipelines
 
-TBA
+Before scheduling a pipeline, developers will likely want to run it manually to ensure it works as expected.
+
+As we have already rendered the pipeline in ["step 1"](./#step-1-render-pipelines), we now need a way to run it.
+
+For this purpose, you will find the following items under [`/step-2--run-pipelines/example_pipeline_1/`](./step-2--run-pipelines/example_pipeline_1):
+
+<table>
+  <tr>
+    <th>File/Directory</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="./step-2--run-pipelines/example_pipeline_1/run_pipeline.sh">
+        <code>./run_pipeline.sh</code>
+      </a>
+    </td>
+    <td>
+      <ul>
+        <li>A bash script which invokes <a href="./common_python/run_pipeline.py"><code>./common_python/run_pipeline.py</code></a> in a reproducible way</li>
+        <li>This script triggers a one-time run of the pipeline rendered at <a href="./step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE"><code>./step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE</code></a></li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
 # Step 3: Schedule Pipelines
 
