@@ -1,0 +1,111 @@
+recurring_runs:
+  - ## were to retrieve the pipeline YAML file from
+    ##  - github_owner: the owner of the GitHub repository containing the pipeline
+    ##  - github_repo: the name of the GitHub repository containing the pipeline
+    ##  - git_reference: the git reference branch/tag/commit to use
+    ##  - file_path: the path to the pipeline YAML file within the repository
+    ##
+    pipeline_source:
+      github_owner: "deployKF"
+      github_repo: "kubeflow-pipelines-gitops"
+      git_reference: "f73d515dfa7cff8e04b6bad3551d9db8a8d589f1"
+      file_path: "step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE/workflow.yaml"
+
+    ## kubeflow pipeline parameters
+    ##  - a list of pipeline parameters and their values
+    ##    https://www.kubeflow.org/docs/components/pipelines/v1/sdk/parameters/
+    ##  - each element is a map with the following keys:
+    ##     - name: the name of the parameter
+    ##     - value: the value of the parameter (mutually exclusive with `valueFrom`)
+    ##     - valueFrom: a map with the following keys: (mutually exclusive with `value`)
+    ##        - file_path: the path to the file containing the value of the parameter
+    ##        - github_owner: the owner of the GitHub repository containing the file (default: `pipeline_source.github_owner`)
+    ##        - github_repo: the name of the GitHub repository containing the file (default: `pipeline_source.github_repo`)
+    ##        - git_reference: the git reference branch/tag/commit to use (default: `pipeline_source.git_reference`)
+    ##
+    pipeline_parameters:
+      - name: custom_message
+        valueFrom:
+          file_path: "step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE/params/custom_message"
+
+    ## the number of non-latest jobs to keep
+    ##  - WARNING: if set to 0, only the latest job version is kept, this means
+    ##             that updates will delete any in-progress runs of older versions
+    ##
+    keep_history: 5
+
+    ## kubeflow job configs
+    ##
+    job:
+      ## if the job is enabled
+      ##  - WARNING: always disable jobs instead of removing them from the list, otherwise
+      ##             the last version of the job will remain enabled in the cluster forever
+      ##
+      enabled: true
+
+      ## the name of the job
+      ##  - WARNING: the name must be unique within each namespace
+      ##
+      name: "example-pipeline-1"
+
+      ## the description of the job
+      ##
+      description: ~
+
+      ## the jobs experiment
+      ##  - WARNING: the experiment must be defined in `experiments.yaml`
+      ##
+      experiment: "example-pipeline-1"
+
+      ## the maximum number of concurrent runs
+      ##  - WARNING: more than this number of concurrent runs could be created
+      ##             if the job is updated while running
+      ##
+      max_concurrency: 1
+
+      ## the kubernetes service account to run the job as
+      ##  - if not specified, usually defaults to "default-editor"
+      ##
+      service_account: ~
+
+      ## trigger configs
+      ##
+      trigger:
+
+        ## if all past missed runs should be "back-filled", or only the latest one
+        ##  - WARNING: Setting `catchup` to `true` may have unexpected results due to how we update jobs.
+        ##             We update jobs by creating a new one and disabling the old one.
+        ##             So after each update, from the scheduler's perspective the job will have never run before.
+        ##             Which could result in the job running multiple times in quick succession.
+        ##
+        catchup: false
+
+        ## the start date of the job
+        ##  - a YAML timestamp: https://yaml.org/type/timestamp.html
+        ##  - WARNING: Using a non-null `start_date` may have unexpected results due to how we update jobs.
+        ##             We update jobs by creating a new one and disabling the old one.
+        ##             So after each update, from the scheduler's perspective the job will have never run before.
+        ##             So if `start_date` is in the past, the job will run immediately after each update.
+        ##
+        #start_date: ~
+
+        ## the end date of the job
+        ##  - a YAML timestamp: https://yaml.org/type/timestamp.html
+        ##
+        #end_date: ~
+
+        ## the cron expression to use
+        ##  - a cron expression in your Kubeflow Pipelines `CRON_SCHEDULE_TIMEZONE` (default: UTC)
+        ##  - WARNING: Kubeflow Pipelines cron expressions have ~6~ fields, not the typical 5.
+        ##             Fields: "{second} {minute} {hour} {day_of_month} {month} {day_of_week}"
+        ##             See full syntax here: https://pkg.go.dev/github.com/robfig/cron
+        ##
+        cron: "0 0 0 * * *"
+
+        ## the number of seconds between runs
+        ##  - WARNING: Using `interval_seconds` may have unexpected results due to how we update jobs.
+        ##             We update jobs by creating a new one and disabling the old one.
+        ##             So after each update, the beginning of the interval will be reset to the current time,
+        ##             and the next run would be `interval_seconds` after that.
+        ##
+        #interval_seconds: 3600
