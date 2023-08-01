@@ -123,7 +123,7 @@ The main reasons to use a structure like this are:
 - Schedules are typically owned by "operations" teams, while the definitions are typically owned by "data science" teams.
 - Machine learning projects often have many pipelines, so logically grouping them makes it easier to manage them.
 
-## Step 1: Render Pipelines
+# Step 1: Render Pipelines
 
 The [Kubeflow Pipelines SDK](https://kubeflow-pipelines.readthedocs.io/en/stable/index.html) is a Python [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) which compiles down to [Argo `Workflow`](https://argoproj.github.io/argo-workflows/workflow-concepts/#the-workflow) resources,
 the Kubeflow Pipelines backend is able to execute compiled pipelines on a Kubernetes cluster on a schedule.
