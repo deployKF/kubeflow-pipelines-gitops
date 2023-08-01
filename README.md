@@ -7,6 +7,71 @@ This repo demonstrates how GitOps can be used with [Kubeflow Pipelines](https://
 > - This repo is about using GitOps to manage __pipelines definitions__ and __pipeline schedules__ NOT the platform itself.
 > - This repo only supports Kubeflow Pipelines compiled in V1 mode.
 
+## Steps
+
+This repository is logically grouped into four steps:
+
+1. __[Render Pipelines](#step-1-render-pipelines)__: demonstrates how to __render__ pipelines
+2. __[Run Pipelines](#step-2-run-pipelines)__: demonstrates how __run__ the rendered pipelines
+3. __[Schedule Pipelines](#step-3-schedule-pipelines)__: demonstrates how to __schedule__ the rendered pipelines
+4. __[Automatic Reconciliation](#step-4-automatic-reconciliation)__: demonstrates how to __automatically reconcile__ the schedule configs
+
+## Real-World Usage
+
+Unlike this demo, in the real world you typically store pipeline definitions and schedules in separate repositories.
+
+For example, you may have the following repositories:
+
+<table>
+  <tr>
+    <th>Repository</th>
+    <th>Purpose</th>
+    <th>Demo Steps Used</th>
+  </tr>
+  <tr>
+    <td>
+      <code>ml-project-1</code>
+    </td>
+    <td>pipeline definitions for "ml project 1"</td>
+    <td rowspan="3">
+      <a href="./#step-1-render-pipelines">
+        "Step 1: Render Pipelines"
+      </a>
+      <br>
+      <a href="./#step-2-run-pipelines">
+        "Step 2: Run Pipelines"
+      </a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>ml-project-2</code>
+    </td>
+    <td>pipeline definitions for "ml project 2"</td>
+  </tr>
+  <tr>
+    <td>
+      <code>ml-project-3</code>
+    </td>
+    <td>pipeline definitions for "ml project 3"</td>
+  </tr>
+  <tr>
+    <td>
+      <code>kfp-schedules</code>
+    </td>
+    <td>schedules for all pipelines</td>
+    <td>
+      <a href="./#step-3-schedule-pipelines">
+        "Step 3: Run Schedule Pipelines"
+      </a>
+      <br>
+      <a href="./#step-4-automatic-reconciliation">
+        "Step 4: Automatic Reconciliation"
+      </a>
+    </td>
+  </tr>
+</table>
+
 ## Repository Contents
 
 This repository contains the following content:
@@ -45,7 +110,7 @@ This repository contains the following content:
         <code>/step-1--render-pipelines/</code>
       </a>
     </td>
-    <td>example of <b>compiling / rendering</b> Kubeflow Pipelines</td>
+    <td>examples/scripts for <b>rendering</b> pipelines</td>
   </tr>
   <tr>
     <td>
@@ -53,7 +118,7 @@ This repository contains the following content:
         <code>/step-2--run-pipelines/</code>
       </a>
     </td>
-    <td>example of <b>running</b> rendered Kubeflow Pipelines</td>
+    <td>examples/scripts for <b>running</b> rendered pipelines</td>
   </tr>
   <tr>
     <td>
@@ -61,67 +126,9 @@ This repository contains the following content:
         <code>/step-3--schedule-pipelines/</code>
       </a>
     </td>
-    <td>example of <b>scheduling</b> rendered Kubeflow Pipelines</td>
+    <td>examples/scripts for <b>scheduling</b> rendered pipelines</td>
   </tr>
 </table>
-
-## Real-World Usage
-
-Unlike this demo, in the real world you typically store pipeline definitions and schedules in separate repositories.
-
-For example, you may have the following repositories:
-
-<table>
-  <tr>
-    <th>Repository</th>
-    <th>Purpose</th>
-    <th>Demo Steps Used</th>
-  </tr>
-  <tr>
-    <td>
-      <code>ml-project-1</code>
-    </td>
-    <td>contains pipeline definitions for "ml project 1"</td>
-    <td rowspan="3">
-      <a href="./#step-1-render-pipelines">
-        "Step 1: Render Pipelines"
-      </a>
-      <br>
-      <a href="./#step-2-run-pipelines">
-        "Step 2: Run Pipelines"
-      </a>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <code>ml-project-2</code>
-    </td>
-    <td>contains pipeline definitions for "ml project 2"</td>
-  </tr>
-  <tr>
-    <td>
-      <code>ml-project-3</code>
-    </td>
-    <td>contains pipeline definitions for "ml project 3"</td>
-  </tr>
-  <tr>
-    <td>
-      <code>kfp-schedules</code>
-    </td>
-    <td>manages schedules for all pipelines</td>
-    <td>
-      <a href="./#step-3-schedule-pipelines">
-        "Step 3: Run Schedule Pipelines"
-      </a>
-    </td>
-  </tr>
-</table>
-
-The main reasons to use a structure like this are:
-
-- At a fundamental level, pipeline definitions and schedules are different things (with different lifecycles).
-- Schedules are typically owned by "operations" teams, while the definitions are typically owned by "data science" teams.
-- Machine learning projects often have many pipelines, so logically grouping them makes it easier to manage them.
 
 # Step 1: Render Pipelines
 
@@ -130,7 +137,9 @@ the Kubeflow Pipelines backend is able to execute compiled pipelines on a Kubern
 
 To manage pipeline definitions/schedules with GitOps, we need a reliable way to render the pipelines from their "dynamic Python representation" into their "static YAML representation".
 
-For this purpose, you will find the following items under [`/step-1--render-pipelines/example_pipeline_1/`](./step-1--render-pipelines/example_pipeline_1):
+## Example
+
+You will find the following items under [`/step-1--render-pipelines/example_pipeline_1/`](./step-1--render-pipelines/example_pipeline_1):
 
 <table>
   <tr>
@@ -145,7 +154,7 @@ For this purpose, you will find the following items under [`/step-1--render-pipe
     </td>
     <td>
       <ul>
-        <li>A Python script containing the pipeline definition.</li>
+        <li>A Python script containing a pipeline definition.</li>
         <li>This script exposes an argument named <code>--output-folder</code>,
           which specifies where the rendered pipeline should be saved.
         </li>
@@ -205,28 +214,6 @@ For this purpose, you will find the following items under [`/step-1--render-pipe
   </tr>
 </table>
 
-Additionally, we provide the following GitHub Actions [reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow) templates under [`/.github/workflows/`](./.github/workflows):
-
-<table>
-  <tr>
-    <th>Workflow Template</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      <a href="./.github/workflows/_check-pipelines-are-rendered.yaml">
-        <code>./_check-pipelines-are-rendered.yaml</code>
-      </a>
-    </td>
-    <td>
-      <ul>
-        <li>Takes a list named <code>pipeline_render_scripts</code> with paths to scripts like <code>render_pipeline.sh</code>, and runs them to prevent merging PRs which forget to run them.</li>
-        <li>See <a href="./.github/workflows/check-pipelines-are-rendered.yaml"><code>./check-pipelines-are-rendered.yaml</code></a> for an example of calling this workflow.</li>
-      </ul>
-    </td>
-  </tr>
-</table>
-
 > __WARNING:__
 > 
 > It is NOT recommended to run `pipeline.py` directly, but rather to use scripts like `render_pipeline.sh` that ensure the rendered pipeline is only updated if the pipeline definition actually changes.
@@ -249,13 +236,39 @@ Additionally, we provide the following GitHub Actions [reusable workflow](https:
 > - If you do this, you will need to create a separate `render_pipeline.sh` script for each variant, for example, `render_pipeline_dev.sh`, `render_pipeline_test.sh`, `render_pipeline_prod.sh`.
 > - These scripts should be configured to render the pipeline into a separate directory, for example, `RENDERED_PIPELINE_dev/`, `RENDERED_PIPELINE_test/`, `RENDERED_PIPELINE_prod/`.
 
+## GitHub Actions
+
+We provide the following GitHub Actions as [reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow) templates under [`/.github/workflows/`](./.github/workflows):
+
+<table>
+  <tr>
+    <th>Workflow Template</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="./.github/workflows/_check-pipelines-are-rendered.yaml">
+        <code>./_check-pipelines-are-rendered.yaml</code>
+      </a>
+    </td>
+    <td>
+      <ul>
+        <li>Takes a list named <code>pipeline_render_scripts</code> with paths to scripts like <code>render_pipeline.sh</code>, and runs them to prevent merging PRs which forget to run them.</li>
+        <li>See <a href="./.github/workflows/check-pipelines-are-rendered.yaml"><code>./check-pipelines-are-rendered.yaml</code></a> for an example of calling this workflow.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
 # Step 2: Run Pipelines
 
 Before scheduling a pipeline, developers will likely want to run it manually to ensure it works as expected.
 
 As we have already rendered the pipeline in ["step 1"](./#step-1-render-pipelines), we now need a way to run it.
 
-For this purpose, you will find the following items under [`/step-2--run-pipelines/example_pipeline_1/`](./step-2--run-pipelines/example_pipeline_1):
+## Example
+
+You will find the following items under [`/step-2--run-pipelines/example_pipeline_1/`](./step-2--run-pipelines/example_pipeline_1):
 
 <table>
   <tr>
@@ -285,7 +298,9 @@ To manage the pipeline schedules with GitOps, we need a system with the followin
 * __Reconciliation:__ The system should be able to read the declarative configs, determine if the current state matches the configs, and if not, make the required changes to bring the current state into alignment with the configs.
 * __Version Control:__ The system should store the declarative configs in a version control system, so that changes to the configs can be reviewed, and so that the history of changes can be viewed.
 
-For this purpose, you will find the following items under [`/step-3--schedule-pipelines/`](./step-3--schedule-pipelines):
+## Example
+
+You will find the following items under [`/step-3--schedule-pipelines/`](./step-3--schedule-pipelines):
 
 <table>
   <tr>
@@ -343,28 +358,6 @@ For this purpose, you will find the following items under [`/step-3--schedule-pi
   </tr>
 </table>
 
-Additionally, we provide the following GitHub Actions [reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow) templates under [`/.github/workflows/`](./.github/workflows):
-
-<table>
-  <tr>
-    <th>Workflow Template</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      <a href="./.github/workflows/_check-reconciliation-configs.yaml">
-        <code>./_check-reconciliation-configs.yaml</code>
-      </a>
-    </td>
-    <td>
-      <ul>
-        <li>Takes a list named <code>reconciliation_config_folders</code> with paths of folders containing reconciliation configs, so they can be checked for errors before merging PRs.</li>
-        <li>See <a href="./.github/workflows/check-reconciliation-configs.yaml"><code>./check-reconciliation-configs.yaml</code></a> for an example of calling this workflow.</li>
-      </ul>
-    </td>
-  </tr>
-</table>
-
 > __WARNING:__
 > 
 > Because Kubeflow Pipelines is NOT able to update existing recurring runs ([kubeflow/pipelines#3789](https://github.com/kubeflow/pipelines/issues/3789)), 
@@ -394,3 +387,49 @@ Additionally, we provide the following GitHub Actions [reusable workflow](https:
 > 3. delete the recurring run from the `recurring_runs.yaml` file
 > 4. run the reconciliation script
 > 5. (optional) delete the remaining paused recurring runs using the KFP Web UI
+
+## GitHub Actions
+
+We provide the following GitHub Actions as [reusable workflow](https://docs.github.com/en/actions/using-workflows/reusing-workflows#creating-a-reusable-workflow) templates under [`/.github/workflows/`](./.github/workflows):
+
+<table>
+  <tr>
+    <th>Workflow Template</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="./.github/workflows/_check-reconciliation-configs.yaml">
+        <code>./_check-reconciliation-configs.yaml</code>
+      </a>
+    </td>
+    <td>
+      <ul>
+        <li>Takes a list named <code>reconciliation_config_folders</code> with paths of folders containing reconciliation configs, so they can be checked for errors before merging PRs.</li>
+        <li>See <a href="./.github/workflows/check-reconciliation-configs.yaml"><code>./check-reconciliation-configs.yaml</code></a> for an example of calling this workflow.</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+
+# Step 4: Automatic Reconciliation
+
+For true GitOps, we need to ensure the state of the cluster is ALWAYS in sync with the configs in this repo.
+
+Generally speaking, there are two approaches to achieve automatic reconciliation:
+
+1. __[PUSH-Based (GitHub Actions)](#push-based-github-actions):__ whenever a change is pushed to GitHub, a job is triggered to reconcile the configs.
+2. __[PULL-Based (Kubernetes Deployment)](#pull-based-kubernetes-deployment):__ a kubernetes deployment in the cluster periodically reconciles the configs.
+ 
+## PUSH-Based (GitHub Actions)
+
+> __NOTE:__
+> 
+> - This approach requires GitHub Actions to have access to your Kubeflow Pipelines API, either by it being public, or by [connecting it to your private network](https://docs.github.com/en/actions/using-github-hosted-runners/connecting-to-a-private-network).
+> - Drift is possible when the cluster state is changed outside the GitOps repo, this is because changes are only reverted when the next push occurs.
+
+TBA
+
+## PULL-Based (Kubernetes Deployment)
+
+TBA
