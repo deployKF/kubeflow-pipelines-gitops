@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+# get the path of the git repository root
+REPOSITORY_ROOT_PATH=$(git rev-parse --show-toplevel)
+
 # source common scripts
-source "$(dirname "$0")/logging.sh"
-source "$(dirname "$0")/python.sh"
+source "${REPOSITORY_ROOT_PATH}/common_scripts/logging.sh"
+source "${REPOSITORY_ROOT_PATH}/common_scripts/python.sh"
 
 #######################################
 # FUNCTIONS

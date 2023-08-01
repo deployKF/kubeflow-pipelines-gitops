@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # get the folder of this script and cd into it (so relative paths work)
-THIS_SCRIPT_FOLDER=$(cd "$(dirname "$0")" && pwd)
+THIS_SCRIPT_FOLDER=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 cd "$THIS_SCRIPT_FOLDER"
 
 # get the path of the git repository root
