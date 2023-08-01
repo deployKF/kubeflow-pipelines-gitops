@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-
 # source common scripts
-source "$(dirname "${BASH_SOURCE[0]}")/logging.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/python.sh"
+source "$(dirname "$0")/logging.sh"
+source "$(dirname "$0")/python.sh"
 
 #######################################
 # FUNCTIONS

@@ -54,12 +54,10 @@ def _parse_args(args: List[str]) -> argparse.Namespace:
     parser.add_argument(
         "--namespace",
         help="The namespace/profile to reconcile the configs into",
-        required=True,
     )
     parser.add_argument(
         "--api-url",
         help="The URL of the Kubeflow Pipelines API",
-        required=True,
     )
     parser.add_argument(
         "--skip-tls-verify",

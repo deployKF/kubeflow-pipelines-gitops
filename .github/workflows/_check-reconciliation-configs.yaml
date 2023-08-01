@@ -1,0 +1,59 @@
+name: check reconciliation configs (TEMPLATE)
+
+on:
+  workflow_call:
+    inputs:
+      reconciliation_config_folders:
+        required: true
+        description: "a newline-separated list of folders containing reconciliation configs to be checked"
+        type: string
+
+    secrets:
+      github_access_token:
+        required: true
+        description: "the GitHub access token which the reconciliation script uses to access GitHub"
+
+jobs:
+  check_reconciliation_configs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+
+      - name: Install Python Requirements
+        run: |
+          pip install -r ./requirements.txt
+
+      - name: Run Pipeline Render Scripts
+        env:
+          GITHUB_TOKEN: "${{ secrets.github_access_token }}"
+          RECONCILIATION_CONFIG_FOLDERS: "${{ inputs.reconciliation_config_folders }}"
+        run: |
+          # source common scripts
+          source ./common_scripts/python.sh
+
+          IFS=$'\n'
+          for _folder in ${RECONCILIATION_CONFIG_FOLDERS}; do
+              echo "::notice::Checking config folder '${_folder}'"
+          
+              # ensure the folder exists
+              if [[ ! -d "${_folder}" ]]; then
+                  echo "::error::Folder '${_folder}' does not exist"
+                  exit 1
+              fi
+          
+              # run the reconciliation script in '--dry-run' mode
+              # NOTE: we set PYTHONPATH so we can import our 'common_python' module
+              PYTHONPATH=$(get_pythonpath) python ./common_python/reconcile_kfp.py \
+                --config-path "${_folder}" \
+                --log-level "DEBUG" \
+                --dry-run
+          done

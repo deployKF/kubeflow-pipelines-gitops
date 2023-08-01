@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # get the folder of this script and cd into it (so relative paths work)
-THIS_SCRIPT_FOLDER=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+THIS_SCRIPT_FOLDER=$(cd "$(dirname "$0")" && pwd)
 cd "$THIS_SCRIPT_FOLDER"
 
 # get the path of the git repository root
@@ -21,7 +21,8 @@ export DEX_PASSWORD="user1"
 # TIP: can also be set with the `--github-token` script argument
 #GITHUB_TOKEN="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
-# run the pipeline
+# reconcile pipelines into the 'team-1' namespace
+# NOTE: we set PYTHONPATH so we can import our 'common_python' module
 PYTHONPATH=$(get_pythonpath) python "${REPOSITORY_ROOT_PATH}/common_python/reconcile_kfp.py" \
   --config-path "./team-1" \
   --namespace "team-1" \

@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # get the folder of this script and cd into it (so relative paths work)
-THIS_SCRIPT_FOLDER=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+THIS_SCRIPT_FOLDER=$(cd "$(dirname "$0")" && pwd)
 cd "$THIS_SCRIPT_FOLDER"
 
 # get the path of the git repository root
@@ -17,7 +17,8 @@ source "${REPOSITORY_ROOT_PATH}/common_scripts/python.sh"
 export DEX_USERNAME="user1@example.com"
 export DEX_PASSWORD="user1"
 
-# run the pipeline
+# run the pipeline in the 'team-1' namespace
+# NOTE: we set PYTHONPATH so we can import our 'common_python' module
 PYTHONPATH=$(get_pythonpath) python "${REPOSITORY_ROOT_PATH}/common_python/run_pipeline.py" \
   --pipeline-folder "${REPOSITORY_ROOT_PATH}/step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE" \
   --run-name "example_pipeline_1" \

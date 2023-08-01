@@ -1,0 +1,23 @@
+name: check reconciliation configs
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  call_workflow:
+    uses: ./.github/workflows/_check-reconciliation-configs.yaml
+    with:
+      # a newline-separated list of folders containing reconciliation configs to be checked
+      reconciliation_config_folders: |
+        ./step-3--schedule-pipelines/team-1/
+
+    secrets:
+      # TIP: if your pipeline definitions are in private repos, you'll need to create a GitHub access token with access
+      #      to those repos, then add the token as a secret on this repo, so it can be used like: ${{ secrets.MY_REPO_SECRET }}
+      github_access_token: ${{ secrets.GITHUB_TOKEN }}
