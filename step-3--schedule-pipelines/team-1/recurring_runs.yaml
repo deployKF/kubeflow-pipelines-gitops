@@ -25,8 +25,8 @@ recurring_runs:
     ##
     pipeline_parameters:
       - name: custom_message
-        valueFrom:
-          file_path: "step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE/params/custom_message"
+        #valueFrom:
+        #  file_path: "step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE/params/custom_message"
 
     ## the number of non-latest jobs to keep
     ##  - WARNING: if set to 0, only the latest job version is kept, this means
