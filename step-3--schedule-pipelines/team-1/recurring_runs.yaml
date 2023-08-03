@@ -28,9 +28,9 @@ recurring_runs:
         valueFrom:
           file_path: "step-1--render-pipelines/example_pipeline_1/RENDERED_PIPELINE/params/custom_message"
 
-    ## the number of non-latest jobs to keep
-    ##  - WARNING: if set to 0, only the latest job version is kept, this means
-    ##             that updates will delete any in-progress runs of older versions
+    ## the number of non-latest versions of the job to keep
+    ##  - TIP: the only way to prevent the possibility of concurrent runs (during updates) is to set this to 0
+    ##         however, this means that during updates, in-progress runs of older versions will be force terminated
     ##
     keep_history: 5
 
@@ -38,8 +38,8 @@ recurring_runs:
     ##
     job:
       ## if the job is enabled
-      ##  - WARNING: always disable jobs instead of removing them from the list, otherwise
-      ##             the last version of the job will remain enabled in the cluster forever
+      ##  - TIP: always disable jobs instead of removing them from the list, otherwise
+      ##         the last version of the job will remain enabled in the cluster forever
       ##
       enabled: true
 
@@ -52,14 +52,13 @@ recurring_runs:
       ##
       description: ~
 
-      ## the jobs experiment
-      ##  - WARNING: the experiment must be defined in `experiments.yaml`
+      ## the experiment to run the job in
+      ##  - WARNING: this experiment must be defined in 'experiments.yaml'
       ##
       experiment: "example-pipeline-1"
 
       ## the maximum number of concurrent runs
-      ##  - WARNING: more than this number of concurrent runs could be created
-      ##             if the job is updated while running
+      ##  - WARNING: if the job is updated while running, more than this number of concurrent runs may occur
       ##
       max_concurrency: 1
 
@@ -76,16 +75,12 @@ recurring_runs:
         ##  - WARNING: Setting `catchup` to `true` may have unexpected results due to how we update jobs.
         ##             We update jobs by creating a new one and disabling the old one.
         ##             So after each update, from the scheduler's perspective the job will have never run before.
-        ##             Which could result in the job running multiple times in quick succession.
+        ##             Which may result in the job running after each update.
         ##
         catchup: false
 
         ## the start date of the job
         ##  - a YAML timestamp: https://yaml.org/type/timestamp.html
-        ##  - WARNING: Using a non-null `start_date` may have unexpected results due to how we update jobs.
-        ##             We update jobs by creating a new one and disabling the old one.
-        ##             So after each update, from the scheduler's perspective the job will have never run before.
-        ##             So if `start_date` is in the past, the job will run immediately after each update.
         ##
         #start_date: ~
 
@@ -94,11 +89,11 @@ recurring_runs:
         ##
         #end_date: ~
 
-        ## the cron expression to use
-        ##  - a cron expression in your Kubeflow Pipelines `CRON_SCHEDULE_TIMEZONE` (default: UTC)
-        ##  - WARNING: Kubeflow Pipelines cron expressions have ~6~ fields, not the typical 5.
-        ##             Fields: "{second} {minute} {hour} {day_of_month} {month} {day_of_week}"
-        ##             See full syntax here: https://pkg.go.dev/github.com/robfig/cron
+        ## the schedule cron expression
+        ##  - TIP: the expression is evaluated in the UTC timezone (or your cluster's CRON_SCHEDULE_TIMEZONE)
+        ##  - TIP: the expression has ~6~ fields, NOT the typical 5.
+        ##         Fields: "{second} {minute} {hour} {day_of_month} {month} {day_of_week}"
+        ##         Full Syntax: https://pkg.go.dev/github.com/robfig/cron
         ##
         cron: "0 0 0 * * *"
 
