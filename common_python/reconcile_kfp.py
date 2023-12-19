@@ -709,7 +709,11 @@ def compare_api_job(
         )
     api_max_concurrency: int = int(api_job.max_concurrency)
     api_service_account: str = api_job.service_account
-    api_parameters: Dict[str, str] = {p.name: p.value for p in api_parameters_list}
+    api_parameters: Dict[str, str] = {
+        # NOTE: empty-string parameter values become None in the API, so we replace them for comparison
+        p.name: (p.value or "")
+        for p in api_parameters_list
+    }
     api_trigger_catchup: bool = not api_job.no_catchup
     api_trigger_start_date: Optional[datetime] = None
     api_trigger_end_date: Optional[datetime] = None
@@ -1052,10 +1056,12 @@ def main(args: List[str]):
                 namespace=experiment_namespace,
                 description=experiment_description,
             )
-        if experiment_api.description != experiment_description:
+        # NOTE: empty-string experiment descriptions become None in the API, so we replace them for comparison
+        if (experiment_api.description or "") != experiment_description:
             logger.warning(
                 f"Experiment '{experiment_name}' already exists but has an unexpected description "
-                f"(EXPECTED: '{experiment_description}', ACTUAL: '{experiment_api.description}')"
+                f"(EXPECTED: '{experiment_description}', ACTUAL: '{experiment_api.description}') "
+                "Descriptions can not be updated, leaving experiment unchanged..."
             )
 
         # ensure the experiment is not archived
